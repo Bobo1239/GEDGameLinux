@@ -1,0 +1,13 @@
+{
+  "version": "0.2.1",
+  "defaults": {},
+  "configurations": [
+    {
+      "type": "default",
+      "project": "CMakeLists.txt",
+      "projectTarget": "TerrainGenerator.exe",
+      "name": "TerrainGenerator with args",
+      "args": [ "-r", "1024", "-o_height", "terrain_height.png", "-o_color", "terrain_color.png", "-o_normal", "terrain_normal.png" ]
+    }
+  ]
+}

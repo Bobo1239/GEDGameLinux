@@ -1,0 +1,309 @@
+diff --git a/Core/DDSTextureLoader.cpp b/Core/DDSTextureLoader.cpp
+index fad0141..a6604ec 100644
+--- a/Core/DDSTextureLoader.cpp
++++ b/Core/DDSTextureLoader.cpp
+@@ -14,7 +14,7 @@
+ // http://go.microsoft.com/fwlink/?LinkId=248929
+ //--------------------------------------------------------------------------------------
+ 
+-#include "dxut.h"
++#include "DXUT.h"
+ 
+ #include "DDSTextureLoader.h"
+ 
+diff --git a/Core/DXUT.cpp b/Core/DXUT.cpp
+index 11285d1..2902baa 100644
+--- a/Core/DXUT.cpp
++++ b/Core/DXUT.cpp
+@@ -3926,7 +3926,7 @@ HRESULT DXUTGetAdapterOrdinalFromMonitor( HMONITOR hMonitor, UINT* pAdapterOrdin
+     // Get the monitor handle information
+     MONITORINFOEX mi;
+     mi.cbSize = sizeof( MONITORINFOEX );
+-    DXUTGetMonitorInfo( hMonitor, &mi );
++    DXUTGetMonitorInfo( hMonitor, (LPMONITORINFO)&mi );
+ 
+     // Search for this monitor in our enumeration hierarchy.
+     auto pd3dEnum = DXUTGetD3D11Enumeration();
+@@ -3959,7 +3959,7 @@ HRESULT DXUTGetOutputOrdinalFromMonitor( HMONITOR hMonitor, UINT* pOutputOrdinal
+     // Get the monitor handle information
+     MONITORINFOEX mi;
+     mi.cbSize = sizeof( MONITORINFOEX );
+-    DXUTGetMonitorInfo( hMonitor, &mi );
++    DXUTGetMonitorInfo( hMonitor, (LPMONITORINFO)&mi );
+ 
+     // Search for this monitor in our enumeration hierarchy.
+     auto pd3dEnum = DXUTGetD3D11Enumeration();
+diff --git a/Core/DXUT.h b/Core/DXUT.h
+index 46ac167..5e1946e 100644
+--- a/Core/DXUT.h
++++ b/Core/DXUT.h
+@@ -52,7 +52,7 @@
+ #endif
+ 
+ #include <windows.h>
+-#include <initguid.h>
++// #include <initguid.h>
+ #include <assert.h>
+ #include <commctrl.h> // for InitCommonControls() 
+ #include <shellapi.h> // for ExtractIcon()
+diff --git a/Core/DXUTmisc.cpp b/Core/DXUTmisc.cpp
+index d23c0e7..5031ab2 100644
+--- a/Core/DXUTmisc.cpp
++++ b/Core/DXUTmisc.cpp
+@@ -8,7 +8,7 @@
+ //
+ // http://go.microsoft.com/fwlink/?LinkId=320437
+ //--------------------------------------------------------------------------------------
+-#include "dxut.h"
++#include "DXUT.h"
+ #include <xinput.h>
+ 
+ #include "ScreenGrab.h"
+@@ -202,7 +202,7 @@ void CDXUTTimer::LimitThreadAffinityToCurrentProc()
+ //--------------------------------------------------------------------------------------
+ // Returns the string for the given DXGI_FORMAT.
+ //--------------------------------------------------------------------------------------
+-#define DXUTDXGIFMTSTR( a ) case a: pstr = L#a; break;
++#define DXUTDXGIFMTSTR( a ) case a: pstr = L ## #a; break;
+ 
+ _Use_decl_annotations_
+ LPCWSTR WINAPI DXUTDXGIFormatToString( DXGI_FORMAT format, bool bWithPrefix )
+@@ -552,7 +552,7 @@ HRESULT WINAPI DXUT_Dynamic_D3D11CreateDevice( IDXGIAdapter* pAdapter,
+         return DXUTERR_NODIRECT3D;
+ }
+ 
+-#define TRACE_ID(iD) case iD: return L#iD;
++#define TRACE_ID(iD) case iD: return L ## #iD;
+ 
+ //--------------------------------------------------------------------------------------
+ const WCHAR* WINAPI DXUTTraceWindowsMessage( _In_ UINT uMsg )
+@@ -1257,14 +1257,14 @@ HRESULT DXUTSnapD3D11Screenshot( _In_z_ LPCWSTR szFileName, _In_ bool usedds )
+         return E_FAIL;
+     }
+ 
+-    if ( usedds )
+-    {
+-        hr = DirectX::SaveDDSTextureToFile( dc, pBackBuffer, szFileName );
+-    }
+-    else
+-    {
+-        hr = DirectX::SaveWICTextureToFile( dc, pBackBuffer, GUID_ContainerFormatBmp, szFileName );
+-    }
++    // if ( usedds )
++    // {
++    //     hr = DirectX::SaveDDSTextureToFile( dc, pBackBuffer, szFileName );
++    // }
++    // else
++    // {
++    //     hr = DirectX::SaveWICTextureToFile( dc, pBackBuffer, GUID_ContainerFormatBmp, szFileName );
++    // }
+ 
+     SAFE_RELEASE(pBackBuffer);
+ 
+diff --git a/Core/DXUTmisc.h b/Core/DXUTmisc.h
+index 3d1d9ad..6f43b4e 100644
+--- a/Core/DXUTmisc.h
++++ b/Core/DXUTmisc.h
+@@ -10,6 +10,10 @@
+ //--------------------------------------------------------------------------------------
+ #pragma once
+ 
++// salieri's __noop doesn't work here
++#undef __noop
++#define __noop ((void)0)
++
+ //--------------------------------------------------------------------------------------
+ // XInput helper state/function
+ // This performs extra processing on XInput gamepad data to make it slightly more convenient to use
+diff --git a/Core/WICTextureLoader.cpp b/Core/WICTextureLoader.cpp
+index f74bee4..c9c5aba 100644
+--- a/Core/WICTextureLoader.cpp
++++ b/Core/WICTextureLoader.cpp
+@@ -21,7 +21,7 @@
+ // http://go.microsoft.com/fwlink/?LinkId=248929
+ //--------------------------------------------------------------------------------------
+ 
+-#include "dxut.h"
++#include "DXUT.h"
+ 
+ // We could load multi-frame images (TIFF/GIF) into a texture array.
+ // For now, we just load the first frame (note: DirectXTex supports multi-frame images)
+diff --git a/Core/dxerr.cpp b/Core/dxerr.cpp
+index 4b56fa9..e572c49 100644
+--- a/Core/dxerr.cpp
++++ b/Core/dxerr.cpp
+@@ -6,7 +6,7 @@
+ // Copyright (c) Microsoft Corporation. All rights reserved.
+ // Licensed under the MIT License.
+ //--------------------------------------------------------------------------------------
+-#include "dxut.h"
++#include "DXUT.h"
+ 
+ // This version only supports UNICODE.
+ 
+@@ -51,14 +51,14 @@
+ 
+ #define  CHK_ERRA(hrchk) \
+         case hrchk: \
+-             return L#hrchk;
++             return L ## #hrchk;
+ 
+ #define HRESULT_FROM_WIN32b(x) ((HRESULT)(x) <= 0 ? ((HRESULT)(x)) : ((HRESULT) (((x) & 0x0000FFFF) | (FACILITY_WIN32 << 16) | 0x80000000)))
+ 
+ #define  CHK_ERR_WIN32A(hrchk) \
+         case HRESULT_FROM_WIN32b(hrchk): \
+         case hrchk: \
+-             return L#hrchk;
++             return L ## #hrchk;
+ 
+ #define  CHK_ERR_WIN32_ONLY(hrchk, strOut) \
+         case HRESULT_FROM_WIN32b(hrchk): \
+@@ -74,6 +74,7 @@ const WCHAR* WINAPI DXGetErrorStringW( _In_ HRESULT hr )
+ // -------------------------------------------------------------
+ // Common Win32 error codes
+ // -------------------------------------------------------------
++#if 0
+         CHK_ERRA(S_OK)
+         CHK_ERRA(S_FALSE)
+ 
+@@ -2992,6 +2993,7 @@ const WCHAR* WINAPI DXGetErrorStringW( _In_ HRESULT hr )
+         CHK_ERR_WIN32A(ERROR_IPSEC_IKE_MM_LIMIT)
+         CHK_ERR_WIN32A(ERROR_IPSEC_IKE_NEGOTIATION_DISABLED)
+         CHK_ERR_WIN32A(ERROR_IPSEC_IKE_NEG_STATUS_END)
++#endif
+ 
+ // -------------------------------------------------------------
+ // ddraw.h error codes
+@@ -3285,7 +3287,7 @@ const WCHAR* WINAPI DXGetErrorStringW( _In_ HRESULT hr )
+ 
+ #define  CHK_ERRA(hrchk) \
+         case hrchk: \
+-             wcscpy_s( desc, count, L#hrchk ); break;
++             wcscpy_s( desc, count, L ## #hrchk ); break;
+ 
+ #define  CHK_ERR(hrchk, strOut) \
+         case hrchk: \
+diff --git a/Optional/DXUTgui.cpp b/Optional/DXUTgui.cpp
+index 78c910e..56cf3ca 100644
+--- a/Optional/DXUTgui.cpp
++++ b/Optional/DXUTgui.cpp
+@@ -8,10 +8,10 @@
+ //--------------------------------------------------------------------------------------
+ #include "DXUT.h"
+ #include "DXUTgui.h"
+-#include "DXUTsettingsDlg.h"
++#include "DXUTsettingsdlg.h"
+ #include "DXUTres.h"
+ 
+-#include "SDKMisc.h"
++#include "SDKmisc.h"
+ 
+ #include "DDSTextureLoader.h"
+ 
+@@ -1622,7 +1622,10 @@ HRESULT CDXUTDialog::DrawSprite( CDXUTElement* pElement, const RECT* prcDest, fl
+     if( m_bCaption )
+         OffsetRect( &rcScreen, 0, m_nCaptionHeight );
+ 
+-    auto pTextureNode = GetTexture( pElement->iTexture );
++    if (pElement->iTexture != 0) {
++        printf("Would load tex %x\n", pElement->iTexture);
++    }
++    auto pTextureNode = GetTexture( 0 );
+     if( !pTextureNode )
+         return E_FAIL;
+ 
+diff --git a/Optional/DXUTsettingsdlg.cpp b/Optional/DXUTsettingsdlg.cpp
+index bc8f21d..08a74c5 100644
+--- a/Optional/DXUTsettingsdlg.cpp
++++ b/Optional/DXUTsettingsdlg.cpp
+@@ -10,7 +10,7 @@
+ //--------------------------------------------------------------------------------------
+ #include "DXUT.h"
+ #include "DXUTgui.h"
+-#include "DXUTsettingsDlg.h"
++#include "DXUTsettingsdlg.h"
+ 
+ //--------------------------------------------------------------------------------------
+ // Internal functions forward declarations
+diff --git a/Optional/SDKmisc.cpp b/Optional/SDKmisc.cpp
+index f142150..0171ee0 100644
+--- a/Optional/SDKmisc.cpp
++++ b/Optional/SDKmisc.cpp
+@@ -8,11 +8,11 @@
+ //
+ // http://go.microsoft.com/fwlink/?LinkId=320437
+ //--------------------------------------------------------------------------------------
+-#include "dxut.h"
++#include "DXUT.h"
+ #include "SDKmisc.h"
+ #include "DXUTres.h"
+ 
+-#include "DXUTGui.h"
++#include "DXUTgui.h"
+ 
+ #include "DDSTextureLoader.h"
+ #include "WICTextureLoader.h"
+@@ -240,7 +240,7 @@ HRESULT WINAPI DXUTSetMediaSearchPath( _In_z_ LPCWSTR strPath )
+     return hr;
+ }
+ 
+-
++#ifndef __WINE__
+ //--------------------------------------------------------------------------------------
+ // Tries to find the location of a SDK media file
+ //       cchDest is the size in WCHARs of strDestPath.  Be careful not to 
+@@ -411,6 +411,44 @@ bool DXUTFindMediaSearchTypicalDirs( WCHAR* strSearchPath, int cchSearch, LPCWST
+ 
+     return false;
+ }
++#else
++void print_wstr(const wchar_t* str) {
++    while (true) {
++        if (*str == 0) {
++            return;
++        }
++        putchar((char) *str);
++        str++;
++    }
++}
++
++HRESULT WINAPI DXUTFindDXSDKMediaFileCch( WCHAR* strDestPath, int cchDest, LPCWSTR strFilename ) {
++    printf("Load media file: ");
++    print_wstr(strFilename);
++    printf("\n");
++    auto i = 0;
++    printf("[WARN] replaced with media/UI/Font.dds\n");
++    strDestPath[i++] = L'm';
++    strDestPath[i++] = L'e';
++    strDestPath[i++] = L'd';
++    strDestPath[i++] = L'i';
++    strDestPath[i++] = L'a';
++    strDestPath[i++] = L'/';
++    strDestPath[i++] = L'U';
++    strDestPath[i++] = L'I';
++    strDestPath[i++] = L'/';
++    strDestPath[i++] = L'F';
++    strDestPath[i++] = L'o';
++    strDestPath[i++] = L'n';
++    strDestPath[i++] = L't';
++    strDestPath[i++] = L'.';
++    strDestPath[i++] = L'd';
++    strDestPath[i++] = L'd';
++    strDestPath[i++] = L's';
++    strDestPath[i++] = L'\x00';
++    return 0;
++}
++#endif
+ 
+ 
+ //--------------------------------------------------------------------------------------
+@@ -754,7 +792,8 @@ HRESULT WINAPI DXUTSaveTextureToFile( ID3D11DeviceContext* pContext, ID3D11Resou
+     }
+     else
+     {
+-        hr = DirectX::SaveWICTextureToFile( pContext, pSource, GUID_ContainerFormatBmp, szFileName );
++        assert(false);
++        // hr = DirectX::SaveWICTextureToFile( pContext, pSource, GUID_ContainerFormatBmp, szFileName );
+     }
+ 
+     return hr;

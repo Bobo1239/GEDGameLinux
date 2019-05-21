@@ -1,0 +1,18 @@
+[submodule "vendor/DirectXMath"]
+	path = vendor/DirectXMath
+	url = https://github.com/microsoft/DirectXMath.git
+[submodule "vendor/intrin"]
+	path = vendor/intrin
+	url = https://github.com/yuikns/intrin.git
+[submodule "vendor/DXUT"]
+	path = vendor/DXUT
+	url = https://github.com/microsoft/DXUT.git
+[submodule "vendor/FX11"]
+	path = vendor/FX11
+	url = https://github.com/microsoft/FX11.git
+[submodule "vendor/safestringlib"]
+	path = vendor/safestringlib
+	url = https://github.com/intel/safestringlib.git
+[submodule "vendor/salieri"]
+	path = vendor/salieri
+	url = https://github.com/nemequ/salieri.git
