@@ -15,7 +15,7 @@ Don't judge me for the atrocities you find here...
 Tested on Arch Linux and Windows 10. Contributions and suggestions welcome!
 
 ## Requirements
-- Wine (also install `d3dcompiler_43` and `d3dcompiler_47` with winetricks)
+- Wine(-staging) (also install `d3dcompiler_43` and `d3dcompiler_47` with winetricks)
 - [DXVK](https://github.com/doitsujin/dxvk)
 
 ## Instructions
@@ -38,6 +38,7 @@ make
   against the native libc while internally using 16 bits so there's a mismatch;
   we've tried both `-fno-short-wchar` (32 bit `wchar_t`) and  `-mno-cygwin` (use
   MSVCRT instead of native libc) but they result in (more) compilation problems)
+- Texture-related stuff is still untested atm
 - ...
 
 ## TODO
