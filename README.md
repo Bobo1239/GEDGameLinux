@@ -39,8 +39,9 @@ make
   we've tried both `-fno-short-wchar` (32 bit `wchar_t`) and  `-mno-cygwin` (use
   MSVCRT instead of native libc) but they result in (more) compilation problems)
 - Texture-related stuff is still untested atm
+- DirectXTex is not ported; Just compile `texconv.exe` under Windows and run it
+  with `wine`
 - ...
 
 ## TODO
-- DDS texture converter which will be needed for the next week
 - ...
